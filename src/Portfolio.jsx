@@ -93,20 +93,6 @@ export default function Portfolio() {
         className="fixed inset-0 -z-10"
       />
 
-      {/* 3D Floating Sphere */}
-      <div className="absolute top-20 right-10 w-40 h-40 md:w-60 md:h-60">
-        <Canvas>
-          <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={3} />
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} />
-          <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-          <mesh>
-            <sphereGeometry args={[1.5, 32, 32]} />
-            <meshStandardMaterial color={darkMode ? '#4FD1C5' : '#2D3748'} roughness={0.2} metalness={0.1} />
-          </mesh>
-        </Canvas>
-      </div>
-
       {/* Dark Mode Toggle */}
       <motion.button
         onClick={toggleDarkMode}
