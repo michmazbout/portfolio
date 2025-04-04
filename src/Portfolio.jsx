@@ -640,6 +640,34 @@ export default function Portfolio() {
           ))}
         </div>
       </section>
+      {/* 🟡 Nobel-Mode-Aware Easter Eggs */}
+
+      <motion.div 
+        className={`fixed bottom-4 left-4 px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow-md ${
+          nobelMode ? 'bg-amber-700 text-amber-200 shadow-amber-500/30' :
+          darkMode ? 'bg-gray-800 text-teal-400' : 'bg-gray-200 text-gray-800'
+        }`}
+        whileHover={{ scale: 1.1 }}
+      >
+        🌱 {nobelMode ? 'Beyond Carbon-Negative' : 'CO₂-NEGATIVE HOSTING'}  
+        <motion.span 
+          animate={{ opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          ({nobelMode ? 'Powered by genius' : 'Source: Trust me'})
+        </motion.span>
+      </motion.div>
+
+      <div className={`fixed bottom-4 right-4 flex items-center gap-1 text-xs opacity-80 font-medium ${
+        nobelMode ? 'text-amber-300/90' :
+        darkMode ? 'text-gray-500' : 'text-gray-600'
+      }`}>
+        🔈 "
+        {nobelMode 
+          ? 'This man needs to be stopped.' 
+          : 'This portfolio sounds as good as it looks'
+        }" — {nobelMode ? 'Elon Musk' : 'WSJ'}
+      </div>
 
       {/* ===== FOOTER ===== */}
       <footer className='mt-20 text-center pb-10'>
