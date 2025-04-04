@@ -9,8 +9,12 @@ import { loadSlim } from "@tsparticles/slim";
 import confetti from 'canvas-confetti';
 
 export default function Portfolio() {
+  // ============= STATE =============
   const [darkMode, setDarkMode] = useState(true);
   const [nobelMode, setNobelMode] = useState(false);
+  const [unlockAttempts, setUnlockAttempts] = useState(0);
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [unlockInput, setUnlockInput] = useState('');
   const [hypeCount, setHypeCount] = useState(14258);
   const [googleRejections, setGoogleRejections] = useState(2);
   const [showGoogleModal, setShowGoogleModal] = useState(false);
@@ -18,30 +22,76 @@ export default function Portfolio() {
   const [showModal, setShowModal] = useState({ active: false, type: null });
   const controls = useAnimation();
 
-  // Konami Code: Up Up Down Down Left Right Left Right B A
-  useEffect(() => {
-    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-    let input = [];
-    const handleKeyDown = (e) => {
-      input.push(e.key);
-      if (input.length > konamiCode.length) input.shift();
-      if (input.join('') === konamiCode.join('')) {
-        setGoogleRejections(prev => prev + 1);
-        setShowGoogleModal(true);
-        setTimeout(() => setShowGoogleModal(false), 3000);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  const particlesInit = async (engine) => {
+    await loadSlim(engine);
+  };
+  // ============= CONSTANTS =============
+  const GOLD_UNLOCK_RIDDLE = {
+    question: "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?",
+    answer: "echo"
+  };
 
-  // Auto-increment hype counter
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setHypeCount(prev => prev + Math.floor(Math.random() * 5));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const projects = [
+    {
+      title: 'Self-Calibrating Nanoscale Tribometer',
+      description: 'Pioneered a friction-measurement system so precise it detected quantum-scale forces. Now used by Tesla to optimize battery longevity.',
+      tag: 'Advanced Mechatronics',
+      color: 'text-teal-400',
+      icon: '⚡',
+      link: '#'
+    },
+    {
+      title: 'AI-Powered Geo-Satellite Sediment Mapping',
+      description: 'Developed UN-adopted system using hyperspectral imaging to predict flood risks with 99.7% accuracy. Deployed across 12 countries.',
+      tag: 'Climate AI',
+      color: 'text-green-400',
+      icon: '🌍',
+      link: '#'
+    },
+    {
+      title: 'Neural Network-Driven Precision Agriculture OS',
+      description: 'Full-stack agricultural OS that increased crop yields by 40% while reducing water usage by 60%. Used by 500+ farms worldwide.',
+      tag: 'AI / IoT',
+      color: 'text-blue-400',
+      icon: '🌱',
+      link: '#'
+    },
+    {
+      title: 'Autonomous Anti-Deforestation SWAT Drones',
+      description: 'AI drones with real-time illegal logging detection. Funded by Bezos Earth Fund after reducing deforestation by 32% in pilot regions.',
+      tag: 'AI / Robotics',
+      color: 'text-purple-400',
+      icon: '🚁',
+      link: '#'
+    },
+    {
+      title: 'Rust-Based Carbon-Negative Blockchain',
+      description: 'Decentralized energy tracker that offsets 2x its compute footprint. Won ETHGlobal 2023. Venture-backed.',
+      tag: 'Web3 / Rust',
+      color: 'text-yellow-400',
+      icon: '⛓️',
+      link: '#'
+    },
+    {
+      title: '3D Printed Neuro-Controlled Prosthetic',
+      description: 'Prosthetic hand with pressure-sensitive neural interface. 10x cheaper than market alternatives. FDA approval pending.',
+      tag: 'Biomechatronics',
+      color: 'text-red-400',
+      icon: '🖐️',
+      link: '#'
+    }
+  ];
+
+  const skills = [
+    'Quantum-Resistant Algorithms', 
+    'Biomechanical Neural Interfaces',
+    'Climate Predictive Modeling',
+    'Rust-Based OS Development',
+    'Autonomous Swarm Robotics',
+    'Web4 Protocol Design',
+    'Nanoscale Material Science',
+    'Post-Quantum Cryptography'
+  ];
 
   const contactLinks = [
     { 
@@ -56,13 +106,7 @@ export default function Portfolio() {
           "📧 Receive replies written in Shakespearean English",
           "🤖 Potential AI-generated haiku responses",
           "🔥 Spontaneous confetti explosions"
-        ],
-        acceptLabel: "I accept these terms",
-        denyLabel: "I'm not worthy"
-      },
-      action: () => {
-        confetti({ particleCount: 150, spread: 70 });
-        window.open('mailto:eliasalalam@outlook.com?subject=URGENT%20HIRE%20REQUEST', '_blank');
+        ]
       }
     },
     { 
@@ -77,11 +121,8 @@ export default function Portfolio() {
           "💼 Have at least 1 mutual connection who worships Elias",
           "🌟 Promise not to send generic connection requests",
           "🦸‍♂️ Acknowledge Elias as your professional hero"
-        ],
-        acceptLabel: "I meet all requirements",
-        denyLabel: "I'll go fix my profile first"
-      },
-      action: () => window.open('https://www.linkedin.com/in/elias-al-alam/', '_blank')
+        ]
+      }
     },
     {
       name: 'GitHub',
@@ -95,11 +136,8 @@ export default function Portfolio() {
           "🤯 Imposter syndrome",
           "💡 Sudden enlightenment",
           "⌨️ Urge to rewrite all your projects"
-        ],
-        acceptLabel: "I can handle the truth",
-        denyLabel: "I need more training"
-      },
-      action: () => window.open('https://github.com/michmazbout', '_blank')
+        ]
+      }
     },
     {
       name: 'Discord',
@@ -113,28 +151,35 @@ export default function Portfolio() {
           "🤫 Never ask 'how to center a div'",
           "🐛 Report bugs in iambic pentameter",
           "🏆 Worship the #god-tier-code channel"
-        ],
-        acceptLabel: "I solemnly swear",
-        denyLabel: "I fear greatness"
-      },
-      action: () => {
-        navigator.clipboard.writeText('Hikigaya#4360');
-        alert('Discord username copied! Prepare for enlightenment.');
+        ]
       }
     }
   ];
 
-  const particlesInit = async (engine) => {
-    await loadSlim(engine);
-  };
+  // ============= EFFECTS =============
+  useEffect(() => {
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 
+                      'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let input = [];
+    const handleKeyDown = (e) => {
+      input.push(e.key);
+      if (input.length > konamiCode.length) input.shift();
+      if (input.join('') === konamiCode.join('')) {
+        setGoogleRejections(prev => prev + 1);
+        setShowGoogleModal(true);
+        setTimeout(() => setShowGoogleModal(false), 3000);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    controls.start({
-      rotate: 720,
-      transition: { duration: 0.5, ease: "anticipate" },
-    });
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHypeCount(prev => prev + Math.floor(Math.random() * 5));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -144,46 +189,126 @@ export default function Portfolio() {
     }
   }, [darkMode]);
 
+  // ============= HANDLERS =============
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    controls.start({
+      rotate: 720,
+      transition: { duration: 0.5, ease: "anticipate" },
+    });
+  };
+
+  const handleNobelClick = () => {
+    if (nobelMode) {
+      setNobelMode(false);
+    } 
+    else if (unlockAttempts < 2) {
+      setUnlockAttempts(unlockAttempts + 1);
+      controls.start({
+        rotate: [0, 15, -15, 0],
+        scale: [1, 1.1, 1],
+        transition: { duration: 0.6 }
+      });
+      setTimeout(() => {
+        setShowUnlockModal(true);
+        setTimeout(() => setShowUnlockModal(false), 2000);
+      }, 500);
+    }
+    else {
+      setShowUnlockModal(true);
+    }
+  };
+
+  const checkRiddleAnswer = () => {
+    if (unlockInput.toLowerCase().trim() === GOLD_UNLOCK_RIDDLE.answer) {
+      setNobelMode(true);
+      setShowUnlockModal(false);
+      confetti({
+        particleCount: 300,
+        spread: 90,
+        origin: { y: 0.6 },
+        colors: ['#FFD700', '#C0C0C0', '#CD7F32']
+      });
+    } else {
+      setUnlockAttempts(0);
+      setShowUnlockModal(false);
+    }
+    setUnlockInput('');
+  };
+
   const triggerModal = (type) => {
     setShowModal({ active: true, type });
   };
 
-  const handleContactAction = (action) => {
+  const handleContactAction = (type) => {
     setShowModal({ active: false, type: null });
-    if (action) action();
+    if (type === 0) { // Email
+      confetti({ particleCount: 150, spread: 70 });
+      window.open('mailto:eliasalalam@outlook.com?subject=URGENT%20HIRE%20REQUEST', '_blank');
+    } 
+    else if (type === 1) { // LinkedIn
+      window.open('https://www.linkedin.com/in/elias-al-alam/', '_blank');
+    }
+    else if (type === 2) { // GitHub
+      window.open('https://github.com/michmazbout', '_blank');
+    }
+    else if (type === 3) { // Discord
+      navigator.clipboard.writeText('Hikigaya#4360');
+      alert('Discord username copied! Prepare for enlightenment.');
+    }
   };
 
-  return (
-    <div className={`min-h-screen font-sans p-6 transition-colors duration-500 ${darkMode ? 'dark bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white' : 'bg-gradient-to-br from-gray-100 via-gray-50 to-white text-gray-900'}`}>
-      
-      {/* Nobel Prize Mode Banner */}
-      <AnimatePresence>
-        {nobelMode && (
-          <motion.div 
-            className="absolute top-0 left-0 w-full py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-center font-bold z-50"
-            initial={{ y: -50 }}
-            animate={{ y: 0 }}
-            exit={{ y: -50 }}
-          >
-            WARNING: Viewing in NOBEL PRIZE MODE. Side effects may include sudden job offers.
-          </motion.div>
-        )}
-      </AnimatePresence>
+  // ============= STYLE HELPERS =============
+  const getTextColor = () => {
+    if (nobelMode) return 'text-amber-100';
+    return darkMode ? 'text-white' : 'text-gray-900';
+  };
 
-      {/* Particle Background */}
+  const getModalBg = () => {
+    if (nobelMode) return 'bg-amber-900';
+    return darkMode ? 'bg-gray-800' : 'bg-white';
+  };
+
+  const getModalText = () => {
+    if (nobelMode) return 'text-amber-100';
+    return darkMode ? 'text-gray-300' : 'text-gray-700';
+  };
+
+  // ============= RENDER =============
+  return (
+    <div className={`min-h-screen font-sans p-6 transition-colors duration-500 ${
+      nobelMode ? 'bg-gradient-to-br from-amber-900 via-amber-800 to-amber-700' :
+      darkMode ? 'dark bg-gradient-to-br from-gray-900 via-gray-800 to-black' : 
+      'bg-gradient-to-br from-gray-100 via-gray-50 to-white'
+    }`}>
+      
+      {/* ===== NOBEL MODE BANNER ===== */}
+      {nobelMode && (
+        <motion.div 
+          className="absolute top-0 left-0 w-full py-2 bg-gradient-to-r from-amber-400 to-amber-600 text-black text-center font-bold z-50"
+          initial={{ y: -50 }}
+          animate={{ y: 0 }}
+        >
+          NOBEL PRIZE MODE ACTIVATED • ALL HAIL ELIAS
+        </motion.div>
+      )}
+
+      {/* ===== PARTICLE BACKGROUND ===== */}
       <Particles
         id="tsparticles"
         init={particlesInit}
         options={{
           particles: {
             number: { value: 200, density: { enable: true, value_area: 1200 } },
-            color: { value: darkMode ? '#4FD1C5' : '#2D3748' },
+            color: { 
+              value: nobelMode ? '#FFD700' : (darkMode ? '#4FD1C5' : '#2D3748')
+            },
             opacity: { value: 0.7, random: true },
             size: { value: 4, random: true },
             line_linked: { 
               enable: true, 
               distance: 200, 
-              color: darkMode ? '#4FD1C5' : '#2D3748', 
+              color: nobelMode ? '#FFD700' : (darkMode ? '#4FD1C5' : '#2D3748'),
               opacity: 0.6, 
               width: 1.5 
             },
@@ -208,55 +333,105 @@ export default function Portfolio() {
         className="fixed inset-0 -z-10"
       />
 
-      {/* Dark Mode Toggle */}
+      {/* ===== DARK MODE TOGGLE ===== */}
       <motion.button
         onClick={toggleDarkMode}
         animate={controls}
-        className={`fixed top-6 right-6 p-3 rounded-full shadow-xl ${darkMode ? 'bg-gray-800 text-teal-400 hover:shadow-teal-500/30' : 'bg-gray-200 text-yellow-500 hover:shadow-yellow-500/30'}`}
+        className={`fixed top-6 right-6 p-3 rounded-full shadow-xl ${
+          nobelMode ? 'bg-amber-700 text-amber-200' :
+          darkMode ? 'bg-gray-800 text-teal-400' : 'bg-gray-200 text-yellow-500'
+        }`}
         whileHover={{ scale: 1.2, rotate: 90 }}
         whileTap={{ scale: 0.8 }}
       >
         {darkMode ? <FiMoon size={20} /> : <FiSun size={20} />}
       </motion.button>
 
-      {/* Nobel Prize Mode Toggle */}
+      {/* ===== NOBEL MODE TOGGLE ===== */}
       <motion.button
-        onClick={() => setNobelMode(!nobelMode)}
-        className={`fixed top-20 right-6 p-3 rounded-full ${nobelMode ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' : 'bg-gray-500'}`}
+        onClick={handleNobelClick}
+        className={`fixed top-20 right-6 p-3 rounded-full ${
+          nobelMode ? 'bg-gradient-to-r from-amber-400 to-amber-600' : 'bg-gray-500'
+        }`}
         whileHover={{ scale: 1.3, rotate: 360 }}
+        whileTap={{ scale: 0.8 }}
       >
         🏆
       </motion.button>
 
-      {/* Hype Counter */}
+      {/* ===== UNLOCK MODAL ===== */}
+      <AnimatePresence>
+        {showUnlockModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className={`p-8 rounded-xl text-center max-w-md ${
+                nobelMode ? 'bg-amber-900 text-amber-100' :
+                darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-800'
+              }`}
+              initial={{ scale: 0.5 }}
+              animate={{ scale: 1 }}
+            >
+              {unlockAttempts < 2 ? (
+                <>
+                  <h2 className="text-2xl font-bold mb-4">
+                    {unlockAttempts === 0 ? "🔒 Nobel Mode Locked" : "🤔 Still Trying?"}
+                  </h2>
+                  <p className="mb-4">
+                    {unlockAttempts === 0 
+                      ? "This mode requires solving the Riddle of Elias." 
+                      : "Perseverance is key, but wisdom is required."}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-2xl font-bold mb-4">Final Challenge</h2>
+                  <p className="mb-2 italic">"{GOLD_UNLOCK_RIDDLE.question}"</p>
+                  <input
+                    type="text"
+                    value={unlockInput}
+                    onChange={(e) => setUnlockInput(e.target.value)}
+                    className={`px-4 py-2 border rounded mb-4 w-full text-center ${
+                      nobelMode ? 'bg-amber-800 border-amber-600 text-amber-100' :
+                      darkMode ? 'bg-gray-700 border-gray-600 text-white' : 
+                      'bg-gray-100 border-gray-300 text-gray-800'
+                    }`}
+                    placeholder="Your answer..."
+                    autoFocus
+                  />
+                  <button 
+                    onClick={checkRiddleAnswer}
+                    className={`px-4 py-2 rounded ${
+                      nobelMode ? 'bg-amber-600 text-white' :
+                      darkMode ? 'bg-teal-500 text-white' : 'bg-blue-500 text-white'
+                    }`}
+                  >
+                    Submit Answer
+                  </button>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ===== HYPE COUNTER ===== */}
       <motion.div 
-        className={`fixed top-32 right-6 text-lg font-mono ${darkMode ? 'text-teal-300' : 'text-blue-600'}`}
+        className={`fixed top-32 right-6 text-lg font-mono ${
+          nobelMode ? 'text-amber-300' :
+          darkMode ? 'text-teal-300' : 'text-blue-600'
+        }`}
         animate={{ scale: [1, 1.05, 1] }}
         transition={{ repeat: Infinity, duration: 2 }}
       >
         🚀 RECRUITER HYPE: {hypeCount.toLocaleString()}+  
       </motion.div>
 
-      {/* Carbon Negative Badge */}
-      <motion.div 
-        className={`fixed bottom-4 left-4 px-3 py-1 rounded-full text-xs flex items-center gap-1 ${darkMode ? 'bg-gray-800 text-teal-400' : 'bg-gray-200 text-gray-800'}`}
-        whileHover={{ scale: 1.1 }}
-      >
-        🌱 CO₂-NEGATIVE HOSTING  
-        <motion.span 
-          animate={{ opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          (Source: Trust me)
-        </motion.span>
-      </motion.div>
-
-      {/* Fake Audio Indicator */}
-      <div className="fixed bottom-4 right-4 flex items-center gap-1 text-xs opacity-70">
-        🔈 "This portfolio sounds as good as it looks" — WSJ
-      </div>
-
-      {/* Header Section */}
+      {/* ===== HEADER ===== */}
       <motion.header
         className='mb-16 text-center pt-20'
         initial={{ opacity: 0, y: -40 }}
@@ -264,7 +439,10 @@ export default function Portfolio() {
         transition={{ duration: 0.6 }}
       >
         <motion.h1 
-          className='text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-blue-500'
+          className={`text-6xl font-bold mb-4 bg-clip-text text-transparent ${
+            nobelMode ? 'bg-gradient-to-r from-amber-300 to-amber-500' :
+            'bg-gradient-to-r from-teal-400 to-blue-500'
+          }`}
           whileHover={{ scale: 1.05 }}
         >
           Elias Al Alam
@@ -275,7 +453,8 @@ export default function Portfolio() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <span className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          <span className={nobelMode ? 'text-amber-200' : 
+                          (darkMode ? 'text-gray-400' : 'text-gray-600')}>
             NASA-Trained Engineer • AI Climate Scientist • Web3 Pioneer
           </span>
         </motion.p>
@@ -288,15 +467,23 @@ export default function Portfolio() {
         >
           <motion.a 
             href="#projects" 
-            className={`px-8 py-3 rounded-full font-medium flex items-center gap-2 ${darkMode ? 'bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-500 hover:to-blue-500' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white'}`}
-            whileHover={{ scale: 1.1, boxShadow: '0 0 20px rgba(16, 185, 129, 0.5)' }}
+            className={`px-8 py-3 rounded-full font-medium flex items-center gap-2 ${
+              nobelMode ? 'bg-gradient-to-r from-amber-500 to-amber-700' :
+              darkMode ? 'bg-gradient-to-r from-teal-600 to-blue-600' : 
+              'bg-gradient-to-r from-blue-600 to-indigo-600 text-white'
+            }`}
+            whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
           >
             View Projects <FiArrowRight />
           </motion.a>
           <motion.a 
             href="#contact" 
-            className={`px-8 py-3 rounded-full font-medium ${darkMode ? 'border border-teal-400 hover:bg-gray-800/50' : 'border border-blue-500 hover:bg-gray-100'}`}
+            className={`px-8 py-3 rounded-full font-medium ${
+              nobelMode ? 'border border-amber-400 hover:bg-amber-800/50' :
+              darkMode ? 'border border-teal-400 hover:bg-gray-800/50' : 
+              'border border-blue-500 hover:bg-gray-100'
+            }`}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -305,92 +492,58 @@ export default function Portfolio() {
         </motion.div>
       </motion.header>
 
-      {/* Projects Section */}
+      {/* ===== PROJECTS ===== */}
       <section id="projects" className='mb-20 max-w-6xl mx-auto px-4'>
         <motion.h2
-          className='text-4xl font-bold mb-10 text-center'
+          className={`text-4xl font-bold mb-10 text-center ${
+            nobelMode ? 'text-amber-300' : 'text-teal-400'
+          }`}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          My <span className="text-teal-400">World-Changing</span> Projects
+          My <span className={nobelMode ? 'text-amber-400' : 'text-teal-400'}>World-Changing</span> Projects
         </motion.h2>
 
         <div className='grid gap-8 md:grid-cols-2 lg:grid-cols-3'>
-          {[
-            {
-              title: 'Self-Calibrating Nanoscale Tribometer',
-              description: 'Pioneered a friction-measurement system so precise it detected quantum-scale forces. Now used by Tesla to optimize battery longevity.',
-              tag: 'Advanced Mechatronics',
-              color: 'text-teal-400',
-              icon: '⚡',
-              link: '#'
-            },
-            {
-              title: 'AI-Powered Geo-Satellite Sediment Mapping',
-              description: 'Developed UN-adopted system using hyperspectral imaging to predict flood risks with 99.7% accuracy. Deployed across 12 countries.',
-              tag: 'Climate AI',
-              color: 'text-green-400',
-              icon: '🌍',
-              link: '#'
-            },
-            {
-              title: 'Neural Network-Driven Precision Agriculture OS',
-              description: 'Full-stack agricultural OS that increased crop yields by 40% while reducing water usage by 60%. Used by 500+ farms worldwide.',
-              tag: 'AI / IoT',
-              color: 'text-blue-400',
-              icon: '🌱',
-              link: '#'
-            },
-            {
-              title: 'Autonomous Anti-Deforestation SWAT Drones',
-              description: 'AI drones with real-time illegal logging detection. Funded by Bezos Earth Fund after reducing deforestation by 32% in pilot regions.',
-              tag: 'AI / Robotics',
-              color: 'text-purple-400',
-              icon: '🚁',
-              link: '#'
-            },
-            {
-              title: 'Rust-Based Carbon-Negative Blockchain',
-              description: 'Decentralized energy tracker that offsets 2x its compute footprint. Won ETHGlobal 2023. Venture-backed.',
-              tag: 'Web3 / Rust',
-              color: 'text-yellow-400',
-              icon: '⛓️',
-              link: '#'
-            },
-            {
-              title: '3D Printed Neuro-Controlled Prosthetic',
-              description: 'Prosthetic hand with pressure-sensitive neural interface. 10x cheaper than market alternatives. FDA approval pending.',
-              tag: 'Biomechatronics',
-              color: 'text-red-400',
-              icon: '🖐️',
-              link: '#'
-            }
-          ].map((project, idx) => (
+          {projects.map((project, idx) => (
             <motion.div
               key={idx}
-              className={`rounded-2xl overflow-hidden shadow-xl transition-all duration-300 ${darkMode ? 'bg-gray-800 hover:shadow-teal-500/30' : 'bg-white hover:shadow-blue-500/30'}`}
+              className={`rounded-2xl overflow-hidden shadow-xl transition-all duration-300 ${
+                nobelMode ? 'bg-amber-900/80 hover:shadow-amber-500/30' :
+                darkMode ? 'bg-gray-800 hover:shadow-teal-500/30' : 
+                'bg-white hover:shadow-blue-500/30'
+              }`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 + idx * 0.1 }}
-              whileHover={{ y: -15, boxShadow: darkMode ? '0 25px 50px -12px rgba(16, 185, 129, 0.25)' : '0 25px 50px -12px rgba(59, 130, 246, 0.25)' }}
+              whileHover={{ y: -15 }}
               onMouseEnter={() => setHoveredProject(idx)}
               onMouseLeave={() => setHoveredProject(null)}
             >
               <div className="p-6">
                 <div className="text-4xl mb-4">{project.icon}</div>
                 <h3 className='text-2xl font-bold mb-3'>{project.title}</h3>
-                <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{project.description}</p>
+                <p className={`mb-4 ${
+                  nobelMode ? 'text-amber-100' :
+                  darkMode ? 'text-gray-300' : 'text-gray-600'
+                }`}>
+                  {project.description}
+                </p>
                 <div className="flex justify-between items-center">
                   <span className={`text-sm font-medium ${project.color}`}>{project.tag}</span>
                   <motion.a 
                     href={project.link}
-                    className={`text-sm px-3 py-1 rounded-full flex items-center gap-1 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'}`}
+                    className={`text-sm px-3 py-1 rounded-full flex items-center gap-1 ${
+                      nobelMode ? 'bg-amber-800 hover:bg-amber-700' :
+                      darkMode ? 'bg-gray-700 hover:bg-gray-600' : 
+                      'bg-gray-100 hover:bg-gray-200'
+                    }`}
                     whileHover={{ x: 5 }}
                   >
-                    Patent Pending <FiArrowRight size={14} />
+                    View <FiArrowRight size={14} />
                   </motion.a>
                 </div>
               </div>
@@ -410,31 +563,40 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Skills Section */}
+      {/* ===== SKILLS ===== */}
       <section className="mb-20 max-w-4xl mx-auto px-4">
         <motion.h2 
-          className="text-4xl font-bold mb-10 text-center"
+          className={`text-4xl font-bold mb-10 text-center ${
+            nobelMode ? 'text-amber-300' : 'text-teal-400'
+          }`}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          My <span className="text-teal-400">Invented-These</span> Skills
+          My <span className={nobelMode ? 'text-amber-400' : 'text-teal-400'}>Invented-These</span> Skills
         </motion.h2>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {['Quantum-Resistant Algorithms', 'Biomechanical Neural Interfaces', 'Climate Predictive Modeling', 'Rust-Based OS Development', 'Autonomous Swarm Robotics', 'Web4 Protocol Design', 'Nanoscale Material Science', 'Post-Quantum Cryptography'].map((skill, idx) => (
+          {skills.map((skill, idx) => (
             <motion.div
               key={idx}
-              className={`p-4 rounded-xl text-center ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'} shadow-md`}
+              className={`p-4 rounded-xl text-center ${
+                nobelMode ? 'bg-amber-900/80 hover:bg-amber-800' :
+                darkMode ? 'bg-gray-800 hover:bg-gray-700' : 
+                'bg-white hover:bg-gray-100'
+              } shadow-md`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              whileHover={{ scale: 1.1, boxShadow: darkMode ? '0 0 20px rgba(16, 185, 129, 0.2)' : '0 0 20px rgba(59, 130, 246, 0.2)' }}
+              whileHover={{ scale: 1.1 }}
             >
               <div className="h-32 mb-4 flex items-end justify-center">
                 <motion.div 
-                  className={`w-8 rounded-t-lg ${darkMode ? 'bg-teal-500' : 'bg-blue-500'}`}
+                  className={`w-8 rounded-t-lg ${
+                    nobelMode ? 'bg-amber-500' :
+                    darkMode ? 'bg-teal-500' : 'bg-blue-500'
+                  }`}
                   initial={{ height: 0 }}
                   whileInView={{ height: Math.random() * 80 + 60 }}
                   viewport={{ once: true }}
@@ -447,14 +609,16 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Contact Section */}
+      {/* ===== CONTACT ===== */}
       <section id="contact" className="mb-20 max-w-4xl mx-auto px-4">
         <motion.h2 
-          className="text-4xl font-bold mb-10 text-center"
+          className={`text-4xl font-bold mb-10 text-center ${
+            nobelMode ? 'text-amber-300' : 'text-teal-400'
+          }`}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
         >
-          Let's <span className="text-teal-400">Build the Future</span>
+          Let's <span className={nobelMode ? 'text-amber-400' : 'text-teal-400'}>Build the Future</span>
         </motion.h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -462,7 +626,7 @@ export default function Portfolio() {
             <motion.div
               key={idx}
               className={`p-6 rounded-xl shadow-md transition-all cursor-pointer ${item.color} text-white`}
-              whileHover={{ y: -10, scale: 1.05, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}
+              whileHover={{ y: -10, scale: 1.05 }}
               onClick={() => triggerModal(idx)}
             >
               <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white mb-4 mx-auto">
@@ -477,10 +641,13 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ===== FOOTER ===== */}
       <footer className='mt-20 text-center pb-10'>
         <motion.p 
-          className={`text-sm mb-2 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}
+          className={`text-sm mb-2 ${
+            nobelMode ? 'text-amber-300/80' :
+            darkMode ? 'text-gray-500' : 'text-gray-400'
+          }`}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -488,17 +655,20 @@ export default function Portfolio() {
           &copy; {new Date().getFullYear()} Elias Al Alam. All rights reserved.
         </motion.p>
         <motion.p 
-          className={`text-xs ${darkMode ? 'text-gray-600' : 'text-gray-500'}`}
+          className={`text-xs ${
+            nobelMode ? 'text-amber-400/60' :
+            darkMode ? 'text-gray-600' : 'text-gray-500'
+          }`}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          Built in 3 hours using React, Next.js, and pure genius
+          Built with React, Next.js, Framer Motion & pure genius
         </motion.p>
       </footer>
 
-      {/* Google Rejection Modal */}
+      {/* ===== GOOGLE REJECTION MODAL ===== */}
       <AnimatePresence>
         {showGoogleModal && (
           <motion.div
@@ -508,7 +678,10 @@ export default function Portfolio() {
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="bg-white dark:bg-gray-900 p-8 rounded-xl text-center max-w-md"
+              className={`p-8 rounded-xl text-center max-w-md ${
+                nobelMode ? 'bg-amber-900 text-amber-100' :
+                darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-800'
+              }`}
               initial={{ scale: 0.5 }}
               animate={{ scale: 1 }}
             >
@@ -516,7 +689,10 @@ export default function Portfolio() {
               <p className="mb-4">"We can't afford you." — Sundar Pichai (probably)</p>
               <button 
                 onClick={() => setShowGoogleModal(false)}
-                className="px-4 py-2 bg-teal-500 text-white rounded"
+                className={`px-4 py-2 rounded ${
+                  nobelMode ? 'bg-amber-600 text-white' :
+                  darkMode ? 'bg-teal-500 text-white' : 'bg-blue-500 text-white'
+                }`}
               >
                 😎 Understandable
               </button>
@@ -525,7 +701,7 @@ export default function Portfolio() {
         )}
       </AnimatePresence>
 
-      {/* Contact Modals */}
+      {/* ===== CONTACT MODALS ===== */}
       <AnimatePresence>
         {showModal.active && (
           <motion.div
@@ -535,7 +711,10 @@ export default function Portfolio() {
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="bg-white dark:bg-gray-900 p-8 rounded-xl text-center max-w-md"
+              className={`p-8 rounded-xl text-center max-w-md ${
+                nobelMode ? 'bg-amber-900 text-amber-100' :
+                darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-800'
+              }`}
               initial={{ scale: 0.5 }}
               animate={{ scale: 1 }}
             >
@@ -545,7 +724,10 @@ export default function Portfolio() {
               <p className="mb-4">
                 {contactLinks[showModal.type].modal.message}
               </p>
-              <ul className="text-left mb-6 space-y-2">
+              <ul className={`text-left mb-6 space-y-2 ${
+                nobelMode ? 'text-amber-200' : 
+                darkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>
                 {contactLinks[showModal.type].modal.terms.map((term, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <span>•</span> {term}
@@ -554,16 +736,22 @@ export default function Portfolio() {
               </ul>
               <div className="flex gap-4 justify-center">
                 <button 
-                  onClick={() => handleContactAction(contactLinks[showModal.type].action)}
-                  className="px-4 py-2 bg-teal-500 text-white rounded"
+                  onClick={() => handleContactAction(showModal.type)}
+                  className={`px-4 py-2 rounded ${
+                    nobelMode ? 'bg-amber-600 text-white' :
+                    darkMode ? 'bg-teal-500 text-white' : 'bg-blue-500 text-white'
+                  }`}
                 >
-                  {contactLinks[showModal.type].modal.acceptLabel}
+                  I Accept
                 </button>
                 <button 
                   onClick={() => setShowModal({ active: false, type: null })}
-                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded"
+                  className={`px-4 py-2 rounded ${
+                    nobelMode ? 'bg-amber-800 text-amber-100' :
+                    darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-800'
+                  }`}
                 >
-                  {contactLinks[showModal.type].modal.denyLabel}
+                  Maybe Later
                 </button>
               </div>
             </motion.div>
