@@ -6,43 +6,121 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { Particles } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
+import confetti from 'canvas-confetti';
 
 export default function Portfolio() {
   const [darkMode, setDarkMode] = useState(true);
+  const [nobelMode, setNobelMode] = useState(false);
+  const [hypeCount, setHypeCount] = useState(14258);
+  const [googleRejections, setGoogleRejections] = useState(2);
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
   const [hoveredProject, setHoveredProject] = useState(null);
+  const [showModal, setShowModal] = useState({ active: false, type: null });
   const controls = useAnimation();
+
+  // Konami Code: Up Up Down Down Left Right Left Right B A
+  useEffect(() => {
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let input = [];
+    const handleKeyDown = (e) => {
+      input.push(e.key);
+      if (input.length > konamiCode.length) input.shift();
+      if (input.join('') === konamiCode.join('')) {
+        setGoogleRejections(prev => prev + 1);
+        setShowGoogleModal(true);
+        setTimeout(() => setShowGoogleModal(false), 3000);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Auto-increment hype counter
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHypeCount(prev => prev + Math.floor(Math.random() * 5));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const contactLinks = [
     { 
       name: 'Email',
       icon: <FiMail size={24} />,
-      url: 'mailto:eliasalalam@outlook.com?subject=URGENT%20HIRE%20REQUEST',
       color: 'bg-gradient-to-r from-red-500 to-pink-600',
-      hoverText: 'Responds in < 5 mins (usually)'
+      hoverText: 'Responds in < 5 mins (usually)',
+      modal: {
+        title: "⚠️ Email Privileges Request",
+        message: "By contacting Elias, you agree to:",
+        terms: [
+          "📧 Receive replies written in Shakespearean English",
+          "🤖 Potential AI-generated haiku responses",
+          "🔥 Spontaneous confetti explosions"
+        ],
+        acceptLabel: "I accept these terms",
+        denyLabel: "I'm not worthy"
+      },
+      action: () => {
+        confetti({ particleCount: 150, spread: 70 });
+        window.open('mailto:eliasalalam@outlook.com?subject=URGENT%20HIRE%20REQUEST', '_blank');
+      }
     },
     { 
       name: 'LinkedIn',
       icon: <FiLinkedin size={24} />,
-      url: 'https://www.linkedin.com/in/elias-al-alam/',
       color: 'bg-gradient-to-r from-blue-600 to-blue-800',
-      hoverText: '500+ recruiters pending'
+      hoverText: '500+ recruiters pending',
+      modal: {
+        title: "🔗 LinkedIn Access Challenge",
+        message: "To proceed, you must:",
+        terms: [
+          "💼 Have at least 1 mutual connection who worships Elias",
+          "🌟 Promise not to send generic connection requests",
+          "🦸‍♂️ Acknowledge Elias as your professional hero"
+        ],
+        acceptLabel: "I meet all requirements",
+        denyLabel: "I'll go fix my profile first"
+      },
+      action: () => window.open('https://www.linkedin.com/in/elias-al-alam/', '_blank')
     },
     {
       name: 'GitHub',
       icon: <FiGithub size={24} />,
-      url: 'https://github.com/michmazbout',
       color: 'bg-gradient-to-r from-gray-800 to-black',
-      hoverText: '10K+ forks (estimated)'
+      hoverText: '10K+ forks (estimated)',
+      modal: {
+        title: "👨‍💻 GitHub Code Review",
+        message: "Warning: Viewing Elias's code may cause:",
+        terms: [
+          "🤯 Imposter syndrome",
+          "💡 Sudden enlightenment",
+          "⌨️ Urge to rewrite all your projects"
+        ],
+        acceptLabel: "I can handle the truth",
+        denyLabel: "I need more training"
+      },
+      action: () => window.open('https://github.com/michmazbout', '_blank')
     },
     {
       name: 'Discord',
       icon: <FaDiscord size={24} />,
-      onClick: () => {
-        navigator.clipboard.writeText('Hikigaya#4360');
-        alert('Copied! Warning: High demand for mentorship slots.');
-      },
       color: 'bg-gradient-to-r from-indigo-500 to-purple-600',
-      hoverText: 'Devs beg for code reviews'
+      hoverText: 'Devs beg for code reviews',
+      modal: {
+        title: "🎮 Discord Initiation",
+        message: "By joining Elias's server, you pledge to:",
+        terms: [
+          "🤫 Never ask 'how to center a div'",
+          "🐛 Report bugs in iambic pentameter",
+          "🏆 Worship the #god-tier-code channel"
+        ],
+        acceptLabel: "I solemnly swear",
+        denyLabel: "I fear greatness"
+      },
+      action: () => {
+        navigator.clipboard.writeText('Hikigaya#4360');
+        alert('Discord username copied! Prepare for enlightenment.');
+      }
     }
   ];
 
@@ -53,7 +131,7 @@ export default function Portfolio() {
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     controls.start({
-      rotate: 720, // Double rotation = double innovation
+      rotate: 720,
       transition: { duration: 0.5, ease: "anticipate" },
     });
   };
@@ -66,10 +144,33 @@ export default function Portfolio() {
     }
   }, [darkMode]);
 
+  const triggerModal = (type) => {
+    setShowModal({ active: true, type });
+  };
+
+  const handleContactAction = (action) => {
+    setShowModal({ active: false, type: null });
+    if (action) action();
+  };
+
   return (
     <div className={`min-h-screen font-sans p-6 transition-colors duration-500 ${darkMode ? 'dark bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white' : 'bg-gradient-to-br from-gray-100 via-gray-50 to-white text-gray-900'}`}>
       
-      {/* Particle Background (Now Warps Spacetime) */}
+      {/* Nobel Prize Mode Banner */}
+      <AnimatePresence>
+        {nobelMode && (
+          <motion.div 
+            className="absolute top-0 left-0 w-full py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-center font-bold z-50"
+            initial={{ y: -50 }}
+            animate={{ y: 0 }}
+            exit={{ y: -50 }}
+          >
+            WARNING: Viewing in NOBEL PRIZE MODE. Side effects may include sudden job offers.
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Particle Background */}
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -93,7 +194,7 @@ export default function Portfolio() {
               random: true, 
               straight: false, 
               out_mode: 'out',
-              warp: true // 🔥 Literal space-bending particles
+              warp: true
             }
           },
           interactivity: {
@@ -107,7 +208,7 @@ export default function Portfolio() {
         className="fixed inset-0 -z-10"
       />
 
-      {/* Dark Mode Toggle (Now with 720° Spin) */}
+      {/* Dark Mode Toggle */}
       <motion.button
         onClick={toggleDarkMode}
         animate={controls}
@@ -118,7 +219,44 @@ export default function Portfolio() {
         {darkMode ? <FiMoon size={20} /> : <FiSun size={20} />}
       </motion.button>
 
-      {/* Header Section (Now with Nobel Prize Credentials) */}
+      {/* Nobel Prize Mode Toggle */}
+      <motion.button
+        onClick={() => setNobelMode(!nobelMode)}
+        className={`fixed top-20 right-6 p-3 rounded-full ${nobelMode ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' : 'bg-gray-500'}`}
+        whileHover={{ scale: 1.3, rotate: 360 }}
+      >
+        🏆
+      </motion.button>
+
+      {/* Hype Counter */}
+      <motion.div 
+        className={`fixed top-32 right-6 text-lg font-mono ${darkMode ? 'text-teal-300' : 'text-blue-600'}`}
+        animate={{ scale: [1, 1.05, 1] }}
+        transition={{ repeat: Infinity, duration: 2 }}
+      >
+        🚀 RECRUITER HYPE: {hypeCount.toLocaleString()}+  
+      </motion.div>
+
+      {/* Carbon Negative Badge */}
+      <motion.div 
+        className={`fixed bottom-4 left-4 px-3 py-1 rounded-full text-xs flex items-center gap-1 ${darkMode ? 'bg-gray-800 text-teal-400' : 'bg-gray-200 text-gray-800'}`}
+        whileHover={{ scale: 1.1 }}
+      >
+        🌱 CO₂-NEGATIVE HOSTING  
+        <motion.span 
+          animate={{ opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          (Source: Trust me)
+        </motion.span>
+      </motion.div>
+
+      {/* Fake Audio Indicator */}
+      <div className="fixed bottom-4 right-4 flex items-center gap-1 text-xs opacity-70">
+        🔈 "This portfolio sounds as good as it looks" — WSJ
+      </div>
+
+      {/* Header Section */}
       <motion.header
         className='mb-16 text-center pt-20'
         initial={{ opacity: 0, y: -40 }}
@@ -167,7 +305,7 @@ export default function Portfolio() {
         </motion.div>
       </motion.header>
 
-      {/* Projects Section (Now with "Changed the World" Projects) */}
+      {/* Projects Section */}
       <section id="projects" className='mb-20 max-w-6xl mx-auto px-4'>
         <motion.h2
           className='text-4xl font-bold mb-10 text-center'
@@ -272,7 +410,7 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Skills Section (Now with "Invented This" Energy) */}
+      {/* Skills Section */}
       <section className="mb-20 max-w-4xl mx-auto px-4">
         <motion.h2 
           className="text-4xl font-bold mb-10 text-center"
@@ -309,7 +447,7 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Contact Section (Now with "Hire Me Now" Button) */}
+      {/* Contact Section */}
       <section id="contact" className="mb-20 max-w-4xl mx-auto px-4">
         <motion.h2 
           className="text-4xl font-bold mb-10 text-center"
@@ -325,7 +463,7 @@ export default function Portfolio() {
               key={idx}
               className={`p-6 rounded-xl shadow-md transition-all cursor-pointer ${item.color} text-white`}
               whileHover={{ y: -10, scale: 1.05, boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)' }}
-              onClick={item.onClick || (() => window.open(item.url, '_blank'))}
+              onClick={() => triggerModal(idx)}
             >
               <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white mb-4 mx-auto">
                 {item.icon}
@@ -339,7 +477,7 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Footer (Now with "Built in a Weekend" Flex) */}
+      {/* Footer */}
       <footer className='mt-20 text-center pb-10'>
         <motion.p 
           className={`text-sm mb-2 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}
@@ -359,6 +497,79 @@ export default function Portfolio() {
           Built in 3 hours using React, Next.js, and pure genius
         </motion.p>
       </footer>
+
+      {/* Google Rejection Modal */}
+      <AnimatePresence>
+        {showGoogleModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="bg-white dark:bg-gray-900 p-8 rounded-xl text-center max-w-md"
+              initial={{ scale: 0.5 }}
+              animate={{ scale: 1 }}
+            >
+              <h2 className="text-2xl font-bold mb-4">Google Rejection #{googleRejections}</h2>
+              <p className="mb-4">"We can't afford you." — Sundar Pichai (probably)</p>
+              <button 
+                onClick={() => setShowGoogleModal(false)}
+                className="px-4 py-2 bg-teal-500 text-white rounded"
+              >
+                😎 Understandable
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Contact Modals */}
+      <AnimatePresence>
+        {showModal.active && (
+          <motion.div
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="bg-white dark:bg-gray-900 p-8 rounded-xl text-center max-w-md"
+              initial={{ scale: 0.5 }}
+              animate={{ scale: 1 }}
+            >
+              <h2 className="text-2xl font-bold mb-4">
+                {contactLinks[showModal.type].modal.title}
+              </h2>
+              <p className="mb-4">
+                {contactLinks[showModal.type].modal.message}
+              </p>
+              <ul className="text-left mb-6 space-y-2">
+                {contactLinks[showModal.type].modal.terms.map((term, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span>•</span> {term}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex gap-4 justify-center">
+                <button 
+                  onClick={() => handleContactAction(contactLinks[showModal.type].action)}
+                  className="px-4 py-2 bg-teal-500 text-white rounded"
+                >
+                  {contactLinks[showModal.type].modal.acceptLabel}
+                </button>
+                <button 
+                  onClick={() => setShowModal({ active: false, type: null })}
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded"
+                >
+                  {contactLinks[showModal.type].modal.denyLabel}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
