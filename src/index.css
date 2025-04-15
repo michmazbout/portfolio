@@ -4,5 +4,5 @@
 @tailwind utilities;
 
 body {
-  @apply bg-darkBrown;
+  @apply bg-darkBackground;
 }

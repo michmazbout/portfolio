@@ -3,18 +3,18 @@ import ExperienceInfo from "./ExperienceInfo";
 const ExperienceTopLeft = () => {
   return (
     <div className="flex flex-col gap-6 w-[300px]">
-      <p className="text-orange font-bold uppercase text-3xl font-special text-center">
-        Since 2022
+      <p className="text-iceBlue font-bold uppercase text-3xl font-special text-center">
+        Since 2015
       </p>
       <div className="flex justify-center items-center gap-4">
-        <ExperienceInfo number="5000+" text="Years" />
-        <p className="font-bold text-6xl text-lightBrown">-</p>
-        <ExperienceInfo number="7" text="Wonders" />
+        <ExperienceInfo number="7+" text="Years" />
+        <p className="font-bold text-6xl text-lavenderMist">-</p>
+        <ExperienceInfo number="8" text="Projects" />
       </div>
       <p className="text-center">
-        With 2000 years of experience building modern architecture
+        Cross-disciplinary work in engineering, climate science, geophysics, ecology, and software
       </p>
-      <ExperienceInfo number="$ 9999 B" text="Max Budget" />
+      <ExperienceInfo number="6" text="Fields" />
     </div>
   );
 };

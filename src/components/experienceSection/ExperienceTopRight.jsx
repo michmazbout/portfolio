@@ -1,17 +1,13 @@
 const ExperienceTopRight = () => {
   return (
-    <div className="xl:w-[25%] lg:w-[30%] border border-lightBrown p-4 rounded-xl">
-      <p className="text-lg text-center text-lightGrey">
-        I specialize in{" "}
-        <span className="font-bold text-white">React and JavaScript</span>,
-        crafting interfaces that feel ancient in wisdom but modern in performance.
+    <div className="xl:w-[25%] lg:w-[30%] border border-lavenderMist p-4 rounded-xl">
+      <p className="text-lg text-center text-lavenderMist">
+        I work across disciplines — from mechanical engineering to environmental science — to build data-driven solutions that matter.
         <br />
-        Whether shaping a humble portfolio or a kingdom-sized dashboard,
-        my focus remains on{" "}
-        <span className="font-bold text-white">clarity, scalability, and user delight</span>.
+        Whether it's analyzing sediment in alpine rivers, modeling glaciers, or writing machine learning models to detect oil spills,
+        my focus remains on <span className="font-bold text-iceBlue">impact, scalability, and clarity</span>.
         <br />
-        Legend says I once coded the entire layout of Atlantis in pure CSS —
-        but the files were lost to the depths.
+        I combine <span className="font-bold text-iceBlue">engineering intuition with code</span> to solve problems that are scientific, environmental, or technical.
       </p>
     </div>
   );

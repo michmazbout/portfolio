@@ -1,20 +1,19 @@
 const ProjectsText = () => {
   return (
     <div className="flex flex-col items-center mt-[100px]">
-      <h2 className="text-6xl text-cyan mb-10">Projects</h2>
-      <p className="text-lg text-center">
-      I've designed structures that defy history and code that bends the rules.
-      <br />
-      From ancient empires to modern empires, my tools have changed — but not my ambition.
-      <br />
-      Whether it's pyramids or pixels, I create what endures.
+      <h2 className="text-6xl text-glowingPink mb-10">Projects</h2>
+      <p className="text-wt text-center">
+        Over the years, I've engineered innovative systems, built environmental tools,
+        and analyzed our planet with the precision of a coder and the eye of a scientist.
+        <br />
+        From glacial modeling to smart homes and river sediment analysis —
+        everything I build is rooted in purpose, backed by data, and designed to last.
 
-      {/* 🧠 Add your taglines below */}
-      <div className="mt-6 text-lightGrey text-sm italic space-y-1">
-        <p>“Full-stack developer, full-scale architect of civilization.”</p>
-        <p>“3,000 years of building — and counting.”</p>
-        <p>“From Petra to Python, I get things done.”</p>
-      </div>
+        <div className="mt-6 text-lavenderMist text-sm italic space-y-1">
+          <p>“Environmental engineer meets full-stack inventor.”</p>
+          <p>“From sediment to software — I design solutions that scale.”</p>
+          <p>“I build systems that speak science and code fluently.”</p>
+        </div>
       </p>
     </div>
   );

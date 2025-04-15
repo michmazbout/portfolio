@@ -37,14 +37,14 @@ const ContactForm = () => {
 
   return (
     <div>
-      <p className="text-cyan">{success}</p>
+      <p className="text-iceBlue">{success}</p>
       <form ref={form} onSubmit={sendEmail} className="flex flex-col gap-4">
         <input
           type="text"
           name="from_name"
           placeholder="Your Name"
           required
-          className="h-12 rounded-lg bg-lightBrown px-2"
+          className="h-12 w-full rounded-lg border border-glowingPink text-lavenderMist text-xl bg-gr transition-all duration-500 px-2"
           value={name}
           onChange={handleName}
         />
@@ -53,7 +53,7 @@ const ContactForm = () => {
           name="from_email"
           placeholder="Your Email"
           required
-          className="h-12 rounded-lg bg-lightBrown px-2"
+          className="h-12 w-full rounded-lg border border-glowingPink text-lavenderMist font-bold text-xl bg-gr transition-all duration-500 px-2"
           value={email}
           onChange={handleEmail}
         />
@@ -64,13 +64,13 @@ const ContactForm = () => {
           cols="50"
           placeholder="Message"
           required
-          className=" rounded-lg bg-lightBrown p-2"
+          className=" w-full rounded-lg border border-glowingPink text-lavenderMist font-bold text-xl bg-gr transition-all duration-500 p-2"
           value={message}
           onChange={handleMessage}
         />
         <button
           type="submit"
-          className="w-full rounded-lg border border-cyan text-white h-12 font-bold text-xl hover:bg-darkCyan bg-cyan transition-all duration-500"
+          className="w-full rounded-lg border border-glowingPink text-glowingPink h-12 font-bold text-xl hover:bg-darkBackground bg-gr transition-all duration-500"
         >
           Send
         </button>

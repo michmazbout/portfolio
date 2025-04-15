@@ -5,31 +5,73 @@ import { fadeIn } from "../../framerMotion/variants";
 
 const projects = [
   {
-    name: "Pyramids of Giza",
-    year: "2600 BC",
+    name: "Riverbed Sediment Study - Swiss Rivers",
+    year: "2023",
+    align: "right",
+    image: "/images/website-img-1.jpg",
+    link: "https://wp.unil.ch/glace/team/",
+  },
+  {
+    name: "Oil Spill Detection via ML",
+    year: "2023",
+    align: "left",
+    image: "/images/website-img-1.jpg",
+    link: "#",
+  },
+  {
+    name: "Glacial Elevation Change Analysis",
+    year: "2023-2024",
+    align: "right",
+    image: "/images/website-img-1.jpg",
+    link: "https://wp.unil.ch/glace/team/",
+  },
+  {
+    name: "Fish Health & Ecosystem Survey - Neuchâtel",
+    year: "2023",
+    align: "left",
+    image: "/images/website-img-1.jpg",
+    link: "#",
+  },
+  {
+    name: "Geophysical Mapping using DGPS",
+    year: "2023",
     align: "right",
     image: "/images/website-img-1.jpg",
     link: "#",
   },
   {
-    name: "Taj Mahal",
-    year: "1631 AD",
+    name: "Tribometer Design & Manufacturing",
+    year: "2019",
     align: "left",
-    image: "/images/website-img-2.webp",
+    image: "/images/website-img-1.jpg",
     link: "#",
   },
   {
-    name: "Petra",
-    year: "369 BC",
+    name: "Smart Home & Irrigation System",
+    year: "2019",
     align: "right",
-    image: "/images/website-img-3.jpg",
+    image: "/images/website-img-1.jpg",
     link: "#",
   },
   {
-    name: "Eiffel Tower",
-    year: "1889 AD",
+    name: "Industrial Machinery Diagnostics",
+    year: "2019",
     align: "left",
-    image: "/images/website-img-4.jpg",
+    image: "/images/website-img-1.jpg",
+    link: "#",
+  },
+  {
+    name: "Election Equipment Tech Support",
+    year: "2018",
+    align: "right",
+    image: "/images/website-img-1.jpg",
+    link: "#",
+  },
+  {
+    name: "Vehicle Impound Compliance Protocols",
+    year: "2015-2020",
+    align: "left",
+    image: "/images/website-img-1.jpg",
     link: "#",
   },
 ];
@@ -54,6 +96,7 @@ const ProjectsMain = () => {
               year={project.year}
               align={project.align}
               image={project.image}
+              link={project.link}
             />
           );
         })}

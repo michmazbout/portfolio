@@ -4,13 +4,12 @@ import { fadeIn } from "../../framerMotion/variants";
 
 const HeroText = () => {
   const catchphrases = [
-    "Used to design temples. Now I design UIs.",
-    "From sandstone to JavaScript — still building.",
-    "Centuries of architecture. Now on the web.",
-    "Coded Atlantis. The files were lost.",
+    "Engineer. Scientist. Coder. Always Building.",
+    "From riverbeds to React — I solve real problems.",
+    "Mechanical roots. Environmental mind. Digital edge.",
+    "Merging logic, code, and climate resilience."
   ];
 
-  // Randomly pick one *once* on render
   const phrase = useMemo(() => {
     return catchphrases[Math.floor(Math.random() * catchphrases.length)];
   }, []);
@@ -22,9 +21,9 @@ const HeroText = () => {
         initial="hidden"
         whileInView="show"
         viewport={{ once: false, amount: 0 }}
-        className="lg:text-2xl sm:text-xl uppercase text-lightGrey"
+        className="lg:text-2xl sm:text-xl uppercase text-lavenderMist"
       >
-        Front-End Web Developer
+        Environmental Engineer & Developer
       </motion.h2>
 
       <motion.h1
@@ -32,7 +31,7 @@ const HeroText = () => {
         initial="hidden"
         whileInView="show"
         viewport={{ once: false, amount: 0 }}
-        className="md:text-[2.8rem] lg:text-6xl sm:text-4xl text-orange font-bold uppercase"
+        className="md:text-[2.8rem] lg:text-6xl sm:text-4xl text-bloodRed font-bold uppercase"
       >
         Elias <br className="sm:hidden md:block" />
         Al Alam
@@ -43,7 +42,7 @@ const HeroText = () => {
         initial="hidden"
         whileInView="show"
         viewport={{ once: false, amount: 0 }}
-        className="text-lg mt-4 text-lightGrey"
+        className="text-lg mt-4 text-lavenderMist"
       >
         {phrase}
       </motion.p>

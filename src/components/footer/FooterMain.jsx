@@ -21,10 +21,10 @@ const FooterMain = () => {
   ];
   return (
     <div className="px-4">
-      <div className="w-full h-[1px] bg-lightGrey mt-24"></div>
+      <div className="w-full h-[1px] bg-glowingPink mt-24"></div>
       <div className="md:flex justify-between mt-4 max-w-[1200px] mx-auto sm:hidden">
-        <p className="text-3xl text-lightGrey ">Elias Al Alam</p>
-        <ul className="flex gap-4 text-lightGrey text-xl">
+        <p className="text-3xl text-lavenderMist ">Elias Al Alam</p>
+        <ul className="flex gap-4 text-lavenderMist text-xl">
           {footerLinks.map((item, index) => {
             return (
               <li key={index}>
@@ -43,7 +43,7 @@ const FooterMain = () => {
           })}
         </ul>
       </div>
-      <p className="max-w-[1200px] mx-auto text-right mt-2 mb-12 text-sm text-lightBrown">
+      <p className="max-w-[1200px] mx-auto text-right mt-2 mb-12 text-sm text-lavenderMist">
         © 2025 Elias Al Alam | All Rights Reserved.
       </p>
     </div>
