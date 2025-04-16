@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import Confetti from 'react-confetti';
 
 // Icons
 const HintIcon = () => (
@@ -20,7 +21,13 @@ const XIcon = () => (
   </svg>
 );
 
-// Component for individual zodiac sign buttons
+const ContactIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+  </svg>
+);
+
 const ZodiacButton = ({ icon, onClick, isSelected }) => (
   <button
     onClick={onClick}
@@ -43,19 +50,18 @@ ZodiacButton.propTypes = {
   isSelected: PropTypes.bool.isRequired,
 };
 
-// Zodiac data with sarcastic/negative comparisons
 const zodiacData = {
   Aries: {
     icon: '♈',
-    difference: "Lol, an Aries? You probably think charging headfirst into walls is a personality trait.",
+    difference: "Hmm, impulsive like Aries? Nah, I actually pause before charging headfirst into chaos.",
   },
   Taurus: {
     icon: '♉',
-    difference: "A Taurus? Let me guess - you think 'stubborn' is just another word for 'right'?",
+    difference: "Taurus? I like comfort too but I don't treat my bed like a permanent residence.",
   },
   Gemini: {
     icon: '♊',
-    difference: "Oh a Gemini... so which of your 5 personalities is guessing right now?",
+    difference: "Gemini? I'm okay juggling two thoughts at once, but not two personalities.",
   },
   Cancer: {
     icon: '♋',
@@ -63,43 +69,59 @@ const zodiacData = {
   },
   Leo: {
     icon: '♌',
-    difference: "A Leo? Let me grab my sunglasses - your ego is blinding me.",
+    difference: "Leo? Nah, I don't need a spotlight to feel alive, I thrive in the shadows.",
   },
   Virgo: {
     icon: '♍',
-    difference: "Virgo? You probably alphabetize your spice rack and color-code your socks.",
+    difference: "Virgo? I appreciate order but I'm not sorting my socks by emotional trauma level.",
   },
   Libra: {
     icon: '♎',
-    difference: "Libra... the sign that can't decide what to eat for lunch, let alone what they want in life.",
+    difference: "Libra? I can make a decision in under an hour—wild, I know.",
   },
   Scorpio: {
     icon: '♏',
-    difference: "Scorpio? I'd say 'mysterious' but we both know you're just socially awkward.",
+    difference: "Scorpio? I like mystery too, but I don't give off 'crime documentary' energy.",
   },
   Sagittarius: {
     icon: '♐',
-    difference: "Sagittarius? The only thing you commit to is not committing to anything.",
+    difference: "Sagittarius? I enjoy freedom, but I don't treat commitment like a horror film.",
   },
   Capricorn: {
     icon: '♑',
-    difference: "Capricorn... because nothing says 'fun' like spreadsheets and 5-year plans.",
+    difference: "Capricorn? I have ambition, sure—but I also know how to chill.",
   },
   Aquarius: {
     icon: '♒',
-    difference: "Aquarius? You're not 'quirky', you're just weird and in denial.",
+    difference: "Aquarius? I'm a bit quirky, but I don't think wearing tinfoil hats is fashion-forward.",
   },
   Pisces: {
     icon: '♓',
-    difference: "Pisces? Cute how you think daydreaming counts as a personality.",
+    difference: "Pisces? I feel things, but I don't cry when I run out of ice cream. Usually.",
   },
 };
 
-// Teasing messages for wrong guesses
+const hints = [
+  'Most women HATE my star sign (but the right ones love it)',
+  'My emotions have tides 🌊',
+  'My loyalty is a fortress 🔒',
+  'I retreat when threatened but return stronger 🦀',
+  'Home is who I protect, not where I live 🏠',
+  'Most compatible with Taurus & Pisces ♋',
+];
+
 const teaseMessages = [
   { attempts: 2, message: "2 wrong guesses already? Just message me for the answer 😏" },
   { attempts: 4, message: "4 attempts and still wrong? My DMs are open for hints 😉" },
   { attempts: 6, message: "6 guesses?? Okay stalker, just message me already! 😜" },
+];
+
+const funnySuccessMessages = [
+  "Bingo! Now slide into my DMs like a crab into its shell 🦀",
+  "Correct! Your prize? A conversation with me - DM now!",
+  "You found me! Now prove you're not a bot by messaging me",
+  "Winner winner! Your reward is my attention - claim it in my DMs",
+  "♋ Cancer gang! Now message me before I get moody again"
 ];
 
 const NavbarLogo = () => {
@@ -109,6 +131,8 @@ const NavbarLogo = () => {
   const [gameState, setGameState] = useState('initial');
   const [hintIndex, setHintIndex] = useState(0);
   const [wrongAttempts, setWrongAttempts] = useState(0);
+  const [extraMessage, setExtraMessage] = useState(null);
+  const [showConfetti, setShowConfetti] = useState(false);
   const popupRef = useRef(null);
   const logoRef = useRef(null);
   const [popupStyle, setPopupStyle] = useState({});
@@ -120,20 +144,20 @@ const NavbarLogo = () => {
       const logoRect = logoRef.current.getBoundingClientRect();
       const popupWidth = Math.min(logoRect.width * 2, 320);
       const popupHeight = popupRef.current.offsetHeight;
-      
+
       let left = logoRect.left + logoRect.width / 2 - popupWidth / 2;
       let right = left + popupWidth;
-      
+
       if (left < 0) left = 10;
       else if (right > window.innerWidth) left = window.innerWidth - popupWidth - 10;
-      
+
       const spaceBelow = window.innerHeight - logoRect.bottom - 20;
       const spaceAbove = logoRect.top - 20;
-      
+
       const topPosition = spaceBelow > popupHeight || spaceBelow > spaceAbove
         ? logoRect.bottom + 10
         : logoRect.top - popupHeight - 10;
-      
+
       setPopupStyle({
         width: `${popupWidth}px`,
         left: `${left}px`,
@@ -150,14 +174,25 @@ const NavbarLogo = () => {
   }, [showOptions, gameState, currentMessage]);
 
   const handleInitialClick = () => {
-    if (gameState === 'initial') {
-      setCurrentMessage("Would you like to guess my zodiac sign?");
-      setShowOptions(true);
-    } else {
-      const nextIndex = (hintIndex + 1) % hints.length;
-      setHintIndex(nextIndex);
-      setCurrentMessage(hints[nextIndex]);
+    if (gameState !== 'initial') {
+      resetGame();
+      return;
     }
+
+    setCurrentMessage("Would you like to guess my zodiac sign?");
+    setShowOptions(true);
+    updatePopupPosition();
+  };
+
+  const resetGame = () => {
+    setGameState('initial');
+    setCurrentMessage("Would you like to guess my zodiac sign?");
+    setSelectedSign(null);
+    setWrongAttempts(0);
+    setHintIndex(0);
+    setExtraMessage(null);
+    setShowOptions(true);
+    setShowConfetti(false);
     updatePopupPosition();
   };
 
@@ -166,25 +201,32 @@ const NavbarLogo = () => {
       setGameState('playing');
       setCurrentMessage(hints[0]);
       setHintIndex(0);
+      setShowOptions(true);
     } else {
       setCurrentMessage("Too scared to guess? Typical...");
       setTimeout(() => setShowOptions(false), 2000);
     }
+    updatePopupPosition();
   };
 
   const handleSignSelect = (sign) => {
     setSelectedSign(sign);
+    
     if (sign === 'Cancer') {
-      setCurrentMessage(zodiacData[sign].difference);
+      setCurrentMessage(funnySuccessMessages[Math.floor(Math.random() * funnySuccessMessages.length)]);
       setGameState('completed');
+      setExtraMessage(null);
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
     } else {
-      setWrongAttempts(prev => {
-        const newAttempts = prev + 1;
-        const tease = teaseMessages.find(msg => msg.attempts === newAttempts);
-        if (tease) setCurrentMessage(tease.message);
-        return newAttempts;
-      });
       setCurrentMessage(zodiacData[sign].difference);
+      const newAttempts = wrongAttempts + 1;
+      setWrongAttempts(newAttempts);
+
+      const tease = teaseMessages.find(msg => msg.attempts === newAttempts);
+      if (tease) {
+        setExtraMessage(tease.message);
+      }
     }
     updatePopupPosition();
   };
@@ -196,10 +238,22 @@ const NavbarLogo = () => {
     updatePopupPosition();
   };
 
+  const handleContactMe = () => {
+    // Close the zodiac popup first for better UX
+    handleClosePopup();
+    
+    // Small delay to let animations complete
+    setTimeout(() => {
+      // Open your LinkedIn in a new tab
+      window.open('https://www.linkedin.com/in/elias-al-alam/', '_blank');
+    }, 300);
+  };
+
   const handleClosePopup = () => {
     setShowOptions(false);
     setCurrentMessage("Click to guess my star sign ♋");
     setSelectedSign(null);
+    setExtraMessage(null);
   };
 
   useEffect(() => {
@@ -226,6 +280,16 @@ const NavbarLogo = () => {
 
   return (
     <div className="relative text-center">
+      {showConfetti && (
+        <Confetti
+          width={window.innerWidth}
+          height={window.innerHeight}
+          recycle={false}
+          numberOfPieces={500}
+          gravity={0.2}
+        />
+      )}
+      
       <button
         ref={logoRef}
         onClick={handleInitialClick}
@@ -275,21 +339,34 @@ const NavbarLogo = () => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-1 mb-2">
-                  {zodiacSigns.map((sign) => (
-                    <ZodiacButton
-                      key={sign}
-                      icon={zodiacData[sign].icon}
-                      onClick={() => handleSignSelect(sign)}
-                      isSelected={selectedSign === sign}
-                    />
-                  ))}
-                </div>
+                {gameState !== 'completed' && (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-1 mb-2">
+                    {zodiacSigns.map((sign) => (
+                      <ZodiacButton
+                        key={sign}
+                        icon={zodiacData[sign].icon}
+                        onClick={() => handleSignSelect(sign)}
+                        isSelected={selectedSign === sign}
+                      />
+                    ))}
+                  </div>
+                )}
+                {extraMessage && (
+                  <p className="text-xs text-pink-300 mb-2 px-1">{extraMessage}</p>
+                )}
                 <button
-                  onClick={handleShowHint}
+                  onClick={gameState === 'completed' ? handleContactMe : handleShowHint}
                   className="flex items-center justify-center bg-indigo-900/50 hover:bg-indigo-800/70 text-white p-2 rounded-lg text-sm transition-all duration-300 mx-auto w-24"
                 >
-                  <HintIcon className="mr-1" /> Hint
+                  {gameState === 'completed' ? (
+                    <>
+                      <ContactIcon className="mr-1" /> Contact
+                    </>
+                  ) : (
+                    <>
+                      <HintIcon className="mr-1" /> Hint
+                    </>
+                  )}
                 </button>
               </>
             )}
