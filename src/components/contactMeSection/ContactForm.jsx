@@ -1,72 +1,75 @@
-import React, { useRef, useState } from "react";
-import emailjs from "@emailjs/browser";
+import React, { useState } from "react";
 
 const ContactForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState("");
-  const handleName = (e) => {
-    setName(e.target.value);
-  };
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-  };
-  const handleMessage = (e) => {
-    setMessage(e.target.value);
-  };
-  const form = useRef();
-  const sendEmail = (e) => {
+
+  const sendEmail = async (e) => {
     e.preventDefault();
-    emailjs
-      .sendForm("service_ko3hmpt", "template_ahbmmqd", form.current, {
-        publicKey: "I6HAT5mUZH7WHabGE",
-      })
-      .then(
-        () => {
-          setEmail("");
-          setName("");
-          setMessage("");
-          setSuccess("Message Sent Succesfully");
+
+    try {
+      const res = await fetch("/api/send-discord", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        (error) => {
-          console.log("FAILED...", error.text);
-        }
-      );
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      if (res.ok) {
+        setSuccess("✅ Message sent successfully!");
+        setName("");
+        setEmail("");
+        setMessage("");
+      } else {
+        setSuccess("❌ Failed to send message.");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setSuccess("⚠️ An error occurred.");
+    }
   };
 
   return (
     <div>
       <p className="text-iceBlue">{success}</p>
-      <form ref={form} onSubmit={sendEmail} className="flex flex-col gap-4">
+      <form onSubmit={sendEmail} autoComplete="off" className="flex flex-col gap-4">
+        {/* Dummy anti-autofill fields */}
+        <input type="text" name="fakeuser" style={{ display: "none" }} />
+        <input type="password" name="fakepass" style={{ display: "none" }} />
+
         <input
           type="text"
-          name="from_name"
+          name="name"
+          autoComplete="off"
           placeholder="Your Name"
           required
           className="h-12 w-full rounded-lg border border-glowingPink text-lavenderMist text-xl bg-gr transition-all duration-500 px-2"
           value={name}
-          onChange={handleName}
+          onChange={(e) => setName(e.target.value)}
         />
         <input
           type="email"
-          name="from_email"
+          name="email"
+          autoComplete="off"
           placeholder="Your Email"
           required
           className="h-12 w-full rounded-lg border border-glowingPink text-lavenderMist font-bold text-xl bg-gr transition-all duration-500 px-2"
           value={email}
-          onChange={handleEmail}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <textarea
-          type="text"
           name="message"
           rows="9"
           cols="50"
+          autoComplete="off"
           placeholder="Message"
           required
-          className=" w-full rounded-lg border border-glowingPink text-lavenderMist font-bold text-xl bg-gr transition-all duration-500 p-2"
+          className="w-full rounded-lg border border-glowingPink text-lavenderMist font-bold text-xl bg-gr transition-all duration-500 p-2"
           value={message}
-          onChange={handleMessage}
+          onChange={(e) => setMessage(e.target.value)}
         />
         <button
           type="submit"
