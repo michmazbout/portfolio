@@ -67,7 +67,11 @@ export default {
 
     },
     extend: {
+      backfaceVisibility: {
+        'hidden': 'hidden',
+      },
       boxShadow: {
+        'glow-pink': '0 0 15px rgba(255, 60, 172, 0.4)',
         cyanShadow: "0px 0px 20px 0px rgba(12, 125, 140, 0.5)",
         cyanBigShadow: "10px 10px 1000px 500px rgba(6, 179, 202, 0.3)",
         cyanMediumShadow: "10px 10px 200px 150px rgba(0, 225, 255, 0.5)",

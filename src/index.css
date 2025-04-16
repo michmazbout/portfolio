@@ -6,3 +6,8 @@
 body {
   @apply bg-darkBackground;
 }
+
+/* Only this one necessary class */
+.flip-card-back {
+  transform: rotateY(180deg);
+}

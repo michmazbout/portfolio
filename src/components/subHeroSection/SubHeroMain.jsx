@@ -1,106 +1,119 @@
-import { useEffect, useRef, useState } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useState } from "react";
+import { 
+  FiCode, FiLayers, FiUsers, 
+  FiZap, FiEye, FiCpu, 
+  FiClock, FiFeather 
+} from "react-icons/fi";
 
 const SubHeroMain = () => {
-  const traits = [
-    "Multidisciplinary Thinker",
-    "Scientific Rigor",
-    "Code Fluency",
-    "Obsessed With Precision",
-    "Field-Tested",
-    "Research-Driven",
-    "Built For Impact",
-    "Self-Taught + Formally Trained",
+  const [flippedCards, setFlippedCards] = useState(Array(8).fill(false));
+  const [lastFlippedIndex, setLastFlippedIndex] = useState(null);
+
+  const skills = [
+    { 
+      icon: <FiCode className="text-glowingPink" size={24} />,
+      title: "Clean Code",
+      description: "I write maintainable code with obsessive readability"
+    },
+    { 
+      icon: <FiLayers className="text-glowingPink" size={24} />, 
+      title: "Adaptable",
+      description: "From legacy systems to bleeding-edge tech"
+    },
+    { 
+      icon: <FiUsers className="text-glowingPink" size={24} />,
+      title: "Team Sync",
+      description: "Bridge between designers, PMs, and engineers"
+    },
+    { 
+      icon: <FiZap className="text-glowingPink" size={24} />,
+      title: "Fast AF",
+      description: "Optimized bundles • 60fps animations • Zero lag"
+    },
+    { 
+      icon: <FiEye className="text-glowingPink" size={24} />,
+      title: "Pixel Police",
+      description: "1px offsets? Unmatched fonts? Not on my watch."
+    },
+    { 
+      icon: <FiCpu className="text-glowingPink" size={24} />,
+      title: "Tech Agnostic",
+      description: "React/Vue/Svelte? JS/TS? Bring it on."
+    },
+    { 
+      icon: <FiClock className="text-glowingPink" size={24} />,
+      title: "Time Alchemist",
+      description: "Estimate accurately • Deliver early"
+    },
+    { 
+      icon: <FiFeather className="text-glowingPink" size={24} />,
+      title: "UX Whisperer",
+      description: "I obsess over intuitive flows"
+    }
   ];
 
-  const scrollRef = useRef(null);
-  const [paused, setPaused] = useState(false);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-
-  const scroll = (direction) => {
-    if (scrollRef.current) {
-      const container = scrollRef.current;
-      const amount = 200;
-      container.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" });
+  const handleFlip = (index) => {
+    const newFlippedCards = [...flippedCards];
+    
+    // Toggle current card
+    newFlippedCards[index] = !newFlippedCards[index];
+    
+    // If another card was flipped, unflip it
+    if (lastFlippedIndex !== null && lastFlippedIndex !== index) {
+      newFlippedCards[lastFlippedIndex] = false;
     }
-  };
-
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const interval = setInterval(() => {
-      if (!paused && container) {
-        container.scrollBy({ left: 1, behavior: "smooth" });
-        if (container.scrollLeft >= container.scrollWidth / 2) {
-          container.scrollLeft = 0;
-        }
-      }
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [paused]);
-
-  const duplicatedTraits = [...traits, ...traits];
-
-  const handleMouseDown = (e) => {
-    isDragging.current = true;
-    startX.current = e.pageX - scrollRef.current.offsetLeft;
-    scrollLeft.current = scrollRef.current.scrollLeft;
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging.current) return;
-    e.preventDefault();
-    const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = (x - startX.current) * 1.5;
-    scrollRef.current.scrollLeft = scrollLeft.current - walk;
-  };
-
-  const handleMouseUp = () => {
-    isDragging.current = false;
+    
+    setFlippedCards(newFlippedCards);
+    setLastFlippedIndex(newFlippedCards[index] ? index : null);
   };
 
   return (
-    <div className="w-full bg-darkBackground text-lavenderMist py-4 px-2">
-      <div className="max-w-[1200px] mx-auto relative border-y border-glowingPink">
-        <button
-          onClick={() => scroll("left")}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-glowingPink hover:scale-125 transition"
-        >
-          <FaChevronLeft size={20} />
-        </button>
-
-        <div
-          ref={scrollRef}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeaveCapture={handleMouseUp}
-          className="overflow-x-auto scrollbar-hide cursor-grab"
-        >
-          <div className="inline-flex gap-8 whitespace-nowrap px-10 py-2">
-            {duplicatedTraits.map((trait, index) => (
-              <p
-                key={index}
-                className="inline-block text-center uppercase text-lg sm:text-xl md:text-2xl xl:text-3xl font-medium"
-              >
-                {trait}
-              </p>
-            ))}
-          </div>
+    <div className="w-full py-12 px-4">
+      <div className="max-w-[1200px] mx-auto">
+        <h3 className="text-center text-glowingPink font-mono uppercase text-sm mb-8 tracking-widest">
+          My Superpowers
+        </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {skills.map((skill, index) => (
+            <div 
+              key={index}
+              onClick={() => handleFlip(index)}
+              className="h-32 w-full [perspective:1000px] cursor-pointer group"
+            >
+              <div className={`relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${
+                flippedCards[index] ? '[transform:rotateY(180deg)]' : ''
+              }`}>
+                {/* Front Side */}
+                <div className={`
+                  absolute w-full h-full [backface-visibility:hidden] 
+                  bg-darkBackground/50 border-2 rounded-lg p-4 
+                  flex flex-col items-center justify-center gap-2
+                  ${flippedCards[index] ? 'border-glowingPink' : 'border-glowingPink/30'}
+                  group-hover:shadow-[0_0_15px_rgba(255,60,172,0.4)]
+                  group-hover:-translate-y-1
+                  transition-all duration-300
+                `}>
+                  <div>{skill.icon}</div>
+                  <h4 className="font-medium text-sm uppercase tracking-wider text-center">
+                    {skill.title}
+                  </h4>
+                  <span className="text-xs text-glowingPink/80 mt-1">
+                    {flippedCards[index] ? "Click to close" : "Click to flip"}
+                  </span>
+                </div>
+                
+                {/* Back Side */}
+                <div className="absolute w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] 
+                  bg-darkBackground/70 border-2 border-glowingPink rounded-lg p-4 
+                  flex items-center justify-center">
+                  <p className="text-xs text-center leading-relaxed">
+                    {skill.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-
-        <button
-          onClick={() => scroll("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 text-glowingPink hover:scale-125 transition"
-        >
-          <FaChevronRight size={20} />
-        </button>
       </div>
     </div>
   );
