@@ -1,5 +1,5 @@
 {
-  "name": "aq-portfolio",
+  "name": "elias-portfolio",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,6 +12,7 @@
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@reduxjs/toolkit": "^2.5.0",
+    "dotenv": "^16.5.0",
     "formik": "^2.4.6",
     "framer-motion": "^11.15.0",
     "react": "^18.3.1",

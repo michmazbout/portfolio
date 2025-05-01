@@ -1,9 +1,49 @@
+const rateLimitMap = new Map();
+import dotenv from "dotenv";
+dotenv.config();
+console.log("Webhook ENV:", process.env.DISCORD_WEBHOOK);
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const windowMs = 60 * 1000;
+  const limit = 2;
+
+  const entry = rateLimitMap.get(ip) || { count: 0, last: now };
+  if (now - entry.last > windowMs) {
+    rateLimitMap.set(ip, { count: 1, last: now });
+    return false;
+  }
+
+  if (entry.count >= limit) return true;
+
+  rateLimitMap.set(ip, { count: entry.count + 1, last: entry.last });
+  return false;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
-  const { name, email, message } = req.body;
+  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  if (isRateLimited(ip)) {
+    return res.status(429).json({ message: "Too many requests. Slow down." });
+  }
+
+  const { name, email, message, phone } = req.body;
+
+  if (phone) {
+    return res.status(400).json({ message: "Bot detected." });
+  }
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: "Invalid email address." });
+  }
 
   const discordWebhookUrl = process.env.DISCORD_WEBHOOK;
 
@@ -46,7 +86,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ message: "Message sent successfully!" });
   } catch (err) {
-    console.error("Error sending message.:", err);
+    console.error("Error sending message:", err);
     return res.status(500).json({ message: "Failed to send message." });
   }
 }
