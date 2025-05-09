@@ -113,3 +113,4 @@ const AllSkillsSM = () => {
 };
 
 export default AllSkillsSM;
+
