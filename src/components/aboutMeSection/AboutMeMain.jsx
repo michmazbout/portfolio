@@ -1,4 +1,3 @@
-import AboutMeImage from "./AboutMeImage";
 import AboutMeText from "./AboutMeText";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../framerMotion/variants";
@@ -22,7 +21,6 @@ const AboutMeMain = () => {
         whileInView="show"
         viewport={{ once: false, amount: 0.7 }}
       >
-        <AboutMeImage />
       </motion.div>
     </div>
   );

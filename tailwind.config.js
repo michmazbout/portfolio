@@ -3,7 +3,7 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     screens: {
-      sm: "350px",
+      sm: "648px",
       md: "768px",
       lg: "1024px",
       xl: "1280px",
@@ -30,7 +30,7 @@ export default {
       darkBrown: "#2c2523",
       black: "#1e1917",
       white: "#f1e1d9",
-      cyan: "#15d1e9",
+      cyan: "#1959A8",
       lightCyan: "#88e5f0",
       darkCyan: "#009fb3",
       orange: "#fb9718",
@@ -47,21 +47,21 @@ export default {
       warmCream: "#FFFDD0",   // Background color
       charcoalGray: "#36454F", // Body text color
       dustyRose: "#DCA1A1",     // Headings/Titles color
-      darkBackground: "#0A0A0A",      // Deep black for elegance & focus
+      darkBackground: "#000000",      // Deep black for elegance & focus
       glowingPink: "#FF3CAC",         // Like the Apple glow effect
       glowingPurple: "#784BA0",       // Subtle energy, modern
       glowingOrange: "#FFB75E",       // Warm contrast and highlight
       textColor: "#E0E0E0",           // Light gray for readability
       headingColor: "#FFFFFF",        // Pure white for strong contrast
-      accentBlue: "#3D9FFF",           // Call-to-action, buttons, links
+      accentBlue: "#1959A8",           // Call-to-action, buttons, links
       // color set
       bl: "#222831",
       gr: "#393E46",
-      cy: "#00ADB5",
+      cy: "#1959A8",
       wt: "#EEEEEE",
 
       radiantViolet: "#B388FF",
-      iceBlue: "#00E0FF",
+      iceBlue: "#1959A8",
       neon:"#FF4DB8",
       bloodRed: "#D72638",
 
@@ -84,6 +84,10 @@ export default {
     fontFamily: {
       body: ["Josefin Sans"],
       special: ['"Nunito"'],
+      muellerhoff: ['"Herr Von Muellerhoff"', 'cursive'],
+      ladoulaise: ['"Monsieur La Doulaise"', 'cursive'],
+      signature: ['"Great Vibes"', 'cursive'],
+
     },
   },
   plugins: [],

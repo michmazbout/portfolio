@@ -77,8 +77,8 @@ const AllSkills = () => {
             onClick={() => setActiveCategory(category)}
             className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${
               activeCategory === category
-                ? "bg-radiantViolet text-wt"
-                : "bg-lavenderMist text-darkBackground hover:bg-purple-500 hover:text-glowingPurple"
+                ? "bg-cyan text-wt"
+                : "bg-cyan text-black hover:bg-purple-500 hover:text-white"
             }`}
           >
             {category}
