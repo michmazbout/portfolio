@@ -1,10 +1,16 @@
-import { useState } from "react";
-import { FaHtml5, FaCss3Alt, FaReact, FaPython, FaJava, FaGitAlt, FaChartLine, FaMapMarkedAlt, FaCogs, FaCube, FaCode, FaFire, FaProjectDiagram, FaRobot, FaWater, FaRecycle, FaMicrochip } from "react-icons/fa";
+import { useState, Fragment } from "react";
+import {
+  FaHtml5, FaCss3Alt, FaReact, FaPython, FaJava, FaGitAlt,
+  FaChartLine, FaMapMarkedAlt, FaCogs, FaCube, FaCode, FaFire,
+  FaProjectDiagram, FaRobot, FaWater, FaRecycle, FaMicrochip
+} from "react-icons/fa";
 import { IoLogoJavascript } from "react-icons/io";
 import { SiTypescript, SiRedux, SiNextdotjs } from "react-icons/si";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../framerMotion/variants";
+import { Listbox } from "@headlessui/react";
+import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 const skillCategories = {
   Programming: [
@@ -60,17 +66,33 @@ const AllSkillsSM = () => {
 
   return (
     <div className="my-8 px-4">
-      <select
-        value={activeCategory}
-        onChange={(e) => setActiveCategory(e.target.value)}
-        className="w-full max-w-xs mx-auto block mb-6 p-3 rounded-md bg-lavenderMist text-darkBackground focus:outline-none focus:ring-2 focus:ring-purple-400"
-      >
-        {Object.keys(skillCategories).map((category) => (
-          <option key={category} value={category} className="bg-lavenderMist text-darkBackground">
-            {category}
-          </option>
-        ))}
-      </select>
+      <Listbox value={activeCategory} onChange={setActiveCategory}>
+        <div className="relative w-full max-w-xs mx-auto mb-6">
+          <Listbox.Button className="w-full p-3 rounded-md bg-lavenderMist text-darkBackground text-left shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 relative">
+            <span>{activeCategory}</span>
+            <ChevronUpDownIcon className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-darkBackground" />
+          </Listbox.Button>
+          <Listbox.Options className="absolute mt-1 w-full bg-lavenderMist text-darkBackground shadow-lg max-h-60 rounded-md overflow-auto ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+            {Object.keys(skillCategories).map((category, idx) => (
+              <Listbox.Option key={idx} value={category} as={Fragment}>
+                {({ active, selected }) => (
+                  <li
+                    className={`cursor-pointer select-none relative py-2 pl-10 pr-4 ${
+                      active ? "bg-purple-100" : ""
+                    } ${selected ? "font-medium" : "font-normal"}`}
+                  >
+                    {category}
+                    {selected && (
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3">✔</span>
+                    )}
+                  </li>
+                )}
+              </Listbox.Option>
+            ))}
+          </Listbox.Options>
+        </div>
+      </Listbox>
+
       <div className="grid grid-cols-3 md:grid-cols-4 gap-8">
         {skillCategories[activeCategory].map((item, index) => (
           <motion.div
