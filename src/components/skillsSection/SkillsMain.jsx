@@ -16,12 +16,13 @@ const SkillsMain = () => {
         >
           <SkillsText />
         </motion.div>
-        <div className="mt-12 w-full sm:hidden lg:block">
+        <div className="mt-12 w-full hidden sm:block">
           <AllSkills />
         </div>
-        <div className="mt-12 w-full sm:block lg:hidden">
+        <div className="mt-12 w-full block sm:hidden">
           <AllSkillsSM />
         </div>
+
       </div>
     </div>
   );
