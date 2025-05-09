@@ -15,10 +15,11 @@ const AboutMeText = () => {
         smooth={true}
         duration={500}
         offset={-120}
-        className="inline-flex w-auto border border-glowingPink rounded-full py-2 px-4 text-lg gap-2 items-center mt-10 hover:bg-glowingPink transition-all duration-500 cursor-pointer text-white hover:text-darkBackground mx-auto md:mx-0"
+        className="inline-flex w-auto min-h-[48px] z-10 border border-glowingPink rounded-full py-2 px-4 text-lg gap-2 items-center mt-10 hover:bg-glowingPink transition-all duration-500 cursor-pointer text-white hover:text-darkBackground mx-auto md:mx-0"
       >
         My Projects
       </Link>
+
 
 
     </div>
