@@ -9,18 +9,18 @@ const AboutMeText = () => {
         <br /><br />
         I don’t just build systems — I design smarter ways to live, monitor, and sustain. Whether it’s through code, hardware, or climate data, my mission is to merge creativity and science into tools that leave real impact.
       </p>
-      <button className="border border-glowingPink rounded-full py-2 px-4 text-lg flex gap-2 items-center mt-10 hover:bg-glowingPink transition-all duration-500 cursor-pointer md:self-start sm:self-center">
-        <Link
-          spy={true}
-          smooth={true}
-          duration={500}
-          offset={-120}
-          to="projects"
-          className="cursor-pointer text-white hover:text-darkBackground transition-all duration-500"
-        >
-          My Projects
-        </Link>
-      </button>
+      <Link
+        to="projects"
+        spy={true}
+        smooth={true}
+        duration={500}
+        offset={-120}
+        className="inline-flex w-auto border border-glowingPink rounded-full py-2 px-4 text-lg gap-2 items-center mt-10 hover:bg-glowingPink transition-all duration-500 cursor-pointer text-white hover:text-darkBackground mx-auto md:mx-0"
+      >
+        My Projects
+      </Link>
+
+
     </div>
   );
 };
